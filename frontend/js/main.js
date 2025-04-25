@@ -45,12 +45,66 @@ function createMatrix() {
   draw()
 }
 
-// Network Latency Simulation
-function simulateLatency() {
+// Real Network Latency Measurement
+function measureLatency() {
+  return new Promise((resolve) => {
+    const start = performance.now()
+
+    // Use a small transparent pixel image for measurement
+    const img = new Image()
+    img.src =
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" +
+      "?cache=" +
+      Date.now()
+
+    img.onload = function () {
+      const latency = performance.now() - start
+      resolve(Math.round(latency))
+    }
+
+    img.onerror = function () {
+      resolve(null)
+    }
+  })
+}
+
+async function updateLatency() {
+  try {
+    const latency = await measureLatency()
+    if (latency) {
+      document.getElementById("latency").textContent = `LATENCY: ${latency}ms ▼`
+      // Store latency for connection quality indicator
+      localStorage.setItem("lastLatency", latency)
+    }
+  } catch (error) {
+    console.error("Latency measurement error:", error)
+  }
+}
+
+// Connection Quality Monitoring
+function startLatencyMonitoring() {
+  // Initial measurement
+  updateLatency()
+
+  // Update every 5 seconds
+  setInterval(updateLatency, 5000)
+
+  // Add connection quality indicator
+  const latencyIndicator = document.createElement("div")
+  latencyIndicator.id = "connection-quality"
+  document.body.appendChild(latencyIndicator)
+
+  // Update indicator color based on latency
   setInterval(() => {
-    document.getElementById("latency").textContent = `LATENCY: ${Math.floor(
-      Math.random() * 50 + 20
-    )}ms ▼`
+    const latency = localStorage.getItem("lastLatency") || 100
+    const indicator = document.getElementById("connection-quality")
+
+    indicator.style.backgroundColor =
+      latency < 50 ? "#00ff00" : latency < 100 ? "#ffd700" : "#ff0000"
+
+    indicator.title = `Network Quality: ${
+      latency < 50 ? "Excellent" : latency < 100 ? "Good" : "Poor"
+    } (${latency}ms)`
   }, 1000)
 }
 
@@ -73,10 +127,106 @@ async function getCSRFToken() {
   }
 }
 
+// Cyber Cursor Animation
+function initCyberCursor() {
+  const cursor = document.getElementById("cursor")
+  const trail = document.getElementById("trail")
+  let mouseX = 0,
+    mouseY = 0
+  let trailX = 0,
+    trailY = 0
+  const speed = 0.2 // Trail follow speed
+
+  // Update cursor position
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX
+    mouseY = e.clientY
+    cursor.style.left = `${mouseX - 12}px`
+    cursor.style.top = `${mouseY - 12}px`
+  })
+
+  // Trail animation loop
+  function animate() {
+    // Calculate trail position with easing
+    const dx = mouseX - trailX
+    const dy = mouseY - trailY
+    trailX += dx * speed
+    trailY += dy * speed
+
+    trail.style.left = `${trailX - 24}px`
+    trail.style.top = `${trailY - 24}px`
+    trail.style.opacity = Math.sqrt(dx * dx + dy * dy) * 0.1
+
+    requestAnimationFrame(animate)
+  }
+  animate()
+
+  // Click animation
+  document.addEventListener("click", () => {
+    cursor.classList.add("click-effect")
+    setTimeout(() => cursor.classList.remove("click-effect"), 500)
+  })
+
+  // Hover effects
+  document.querySelectorAll("a, button").forEach((element) => {
+    element.addEventListener("mouseenter", () => {
+      cursor.style.transform = "scale(1.5)"
+      trail.style.transform = "scale(1.8)"
+    })
+    element.addEventListener("mouseleave", () => {
+      cursor.style.transform = "scale(1)"
+      trail.style.transform = "scale(1)"
+    })
+  })
+
+  // Hide cursor on mobile
+  if ("ontouchstart" in window) {
+    cursor.style.display = "none"
+    trail.style.display = "none"
+  }
+  // Add hardware-accelerated transforms
+  cursor.style.willChange = "transform"
+  trail.style.willChange = "transform"
+
+  // Add dynamic size based on movement speed
+  let lastPos = { x: mouseX, y: mouseY }
+  setInterval(() => {
+    const dx = mouseX - lastPos.x
+    const dy = mouseY - lastPos.y
+    const speed = Math.min(Math.sqrt(dx * dx + dy * dy) * 0.3, 30)
+
+    cursor.style.width = `${24 - speed}px`
+    cursor.style.height = `${24 - speed}px`
+
+    lastPos = { x: mouseX, y: mouseY }
+  }, 50)
+
+  // Add trail particles
+  document.addEventListener("mousemove", () => {
+    if (Math.random() > 0.7) {
+      const particle = document.createElement("div")
+      particle.className = "cursor-particle"
+      particle.style.cssText = `
+                left: ${mouseX}px;
+                top: ${mouseY}px;
+                background: ${
+                  Math.random() > 0.5
+                    ? "var(--terminal-green)"
+                    : "var(--electric-blue)"
+                };
+            `
+      document.body.appendChild(particle)
+
+      setTimeout(() => particle.remove(), 500)
+    }
+  })
+}
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
   createMatrix()
-  simulateLatency()
+  startLatencyMonitoring()
+  initCyberCursor()
 })
 
 // Handle client-side navigation
