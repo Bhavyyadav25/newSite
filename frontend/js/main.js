@@ -114,3 +114,21 @@ async function handleRouteChange() {
 
 // Handle browser navigation
 window.addEventListener("popstate", handleRouteChange)
+
+// Scroll handling for navigation
+let lastScroll = 0
+const scrollThreshold = 100 // Pixels to scroll before hiding nav
+
+function handleNavScroll() {
+  const currentScroll = window.pageYOffset
+  const nav = document.querySelector("nav")
+
+  if (currentScroll > scrollThreshold && currentScroll > lastScroll) {
+    nav.classList.add("hidden")
+  } else {
+    nav.classList.remove("hidden")
+  }
+  lastScroll = currentScroll
+}
+
+window.addEventListener("scroll", handleNavScroll)

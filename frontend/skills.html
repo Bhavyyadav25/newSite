@@ -1,27 +1,73 @@
-<nav>
-  <div class="nav-items">
-    <a href="/" class="nav-item">Home</a>
-    <a href="/projects" class="nav-item">Projects</a>
-    <a href="/skills" class="nav-item">Skills</a>
-    <a href="/experience" class="nav-item">Experience</a>
-    <a href="/blog" class="nav-item">Blog</a>
-    <a href="/contact" class="nav-item">Contact</a>
-  </div>
-  <div class="latency" id="latency"></div>
-</nav>
+<head>
+  <meta charset="UTF-8" />
+  <title>CyberSec Portfolio</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono&family=IBM+Plex+Sans:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <nav>
+    <div class="nav-items">
+      <a href="/" class="nav-item">Home</a>
+      <a href="projects" class="nav-item">Projects</a>
+      <a href="skills" class="nav-item">Skills</a>
+      <a href="experience" class="nav-item">Experience</a>
+      <a href="blog" class="nav-item">Blog</a>
+      <a href="contact" class="nav-item">Contact</a>
+    </div>
+    <div class="latency" id="latency"></div>
+  </nav>
 
-<section class="skills">
-  <div id="cube-container" class="threejs-container"></div>
-  <div class="skill-details" id="skill-details"></div>
-</section>
+  <!-- Update skills.html -->
+  <section class="skills-section">
+    <div class="skills-container">
+      <!-- 3D Cube Container -->
+      <div id="cube-container" class="threejs-container"></div>
 
-<script type="module">
-  import { initSkillsCube } from "/js/skills-cube.js"
+      <!-- Skills Grid -->
+      <div class="skills-grid">
+        <!-- Kernel Development -->
+        <div class="skill-card">
+          <div class="skill-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M12 0L1.75 6v12L12 24l10.25-6V6L12 0zm0 1.664L21.25 6.5v11L12 22.336 2.75 17.5v-11L12 1.664zM12 16c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4zm0-7c-1.654 0-3 1.346-3 3s1.346 3 3 3 3-1.346 3-3-1.346-3-3-3z"
+              />
+            </svg>
+          </div>
+          <div class="skill-content">
+            <h3 class="skill-title">Kernel Development</h3>
+            <div class="skill-details">
+              <p>
+                Expertise in Linux kernel modules, system calls, and driver
+                development
+              </p>
+              <div class="skill-tags">
+                <span class="tag">C</span>
+                <span class="tag">Assembly</span>
+                <span class="tag">GDB</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  document.addEventListener("DOMContentLoaded", () => {
-    if (window.location.pathname.includes("skills")) {
-      initSkillsCube()
-    }
-  })
-</script>
-<script src="/js/skills-cube.js"></script>
+        <!-- Add more skill cards following the same structure -->
+      </div>
+    </div>
+  </section>
+
+  <script type="module">
+    import { initSkillsCube } from "js/skills-cube.js"
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.location.pathname.includes("skills")) {
+        initSkillsCube()
+      }
+    })
+  </script>
+  <script src="js/skills-cube.js"></script>
+  <script src="js/main.js"></script>
+</body>
